@@ -47,7 +47,7 @@ const start = () => {
                 addDepartment()
                 break;
             case choices[4]:
-                console.log('choice 5');
+                addRole()
                 break;
 
             case choices[5]:
@@ -118,5 +118,50 @@ const addDepartment = () => {
         })
         console.log(`\n<------------------------------>\n`);
         viewAllDepartments()
+    })
+}
+
+const addRole = () => {
+    const query = "SELECT * FROM department"
+    connection.query(query, (err, res) => {
+        if (err) throw err;
+        const departmentChoices = res.map(({ id, department_name}) => ({
+            value: id,
+            department: department_name
+        }))
+        console.table(departmentChoices);
+
+        inquirer.prompt([
+            {
+                name: "roleTitle",
+                type: "input",
+                message: "What is the title of the new role?"
+            },
+            {
+                name: "roleSalary",
+                type: "input",
+                message: "What is the salary of the new role?"
+            },
+            {
+                name: "roleDepartment",
+                type: "list",
+                message: "Which department does this role fall under?",
+                choices: departmentChoices
+            }
+        ]).then(answer => {
+            const query = "INSERT INTO role SET ?"
+            connection.query(query, 
+                {
+                    title: answer.roleTitle,
+                    salary: answer.roleSalary,
+                    department_id: answer.roleDepartment
+                }),
+                (err, res) => {
+                    if (err) throw err;
+                }
+                console.log(`\n${answer.roleTitle} role created`);
+                console.log(`\n<------------------------------>\n`);
+                viewAllRoles()
+        })
     })
 }
