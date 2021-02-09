@@ -49,9 +49,9 @@ const start = () => {
             case choices[4]:
                 addRole()
                 break;
-
             case choices[5]:
                 console.log('choice 6');
+                addEmployee()
                 break;
             case choices[6]:
                 console.log('choice 7');
@@ -162,6 +162,81 @@ const addRole = () => {
                 console.log(`\n${answer.roleTitle} role created`);
                 console.log(`\n<------------------------------>\n`);
                 viewAllRoles()
+        })
+    })
+}
+
+const addEmployee = () => {
+    let departmentArray = []
+    connection.query("SELECT * FROM department", (err, res) => {
+        if (err) throw err;
+        res.forEach(department => {
+            departmentArray.push(`${department.id} ${department.department_name}`)
+        })
+
+        let roleArray = []
+        connection.query("SELECT id, title FROM role", (err, res) => {
+            if (err) throw err;
+
+            res.forEach(role => {
+                roleArray.push(`${role.id} ${role.title}`)
+            })
+        })
+
+        let managerArray = []
+        connection.query(`SELECT id, first_name, last_name FROM employee`, (err, res) => {
+            if (err) throw err;
+
+            res.forEach(employee => {
+                managerArray.push(`${employee.id} ${employee.first_name} ${employee.last_name}`)
+            })
+            inquirer.prompt([
+                {
+                    name: "firstName",
+                    type: "input",
+                    message: "Enter employee's first name:"
+                },
+                {
+                    name: "lastName",
+                    type: "input",
+                    message: "Enter employee's last name:"
+                },
+                {
+                    name: "department",
+                    type: "list",
+                    message: "Choose employee's department:",
+                    choices: departmentArray
+                },
+                {
+                    name: "role",
+                    type: "list",
+                    message: "Choose employee's role:",
+                    choices: roleArray
+                },
+                {
+                    name: "manager",
+                    type: "list",
+                    message: "Choose employee's manager:",
+                    choices: managerArray
+                }
+            ]).then(response => {
+                console.log(response)
+                let roleNumber = parseInt(response.role)
+                let managerNumber = parseInt(response.manager)
+                connection.query("INSERT INTO employee SET ?",
+                {
+                    first_name: response.firstName,
+                    last_name: response.lastName,
+                    role_id: roleNumber,
+                    manager_id: managerNumber
+                },
+                (err, res) => {
+                    if (err) throw err;
+                    console.log(`\n${res.affectedRows} employee created`)
+                    console.log(`\n<------------------------------>\n`);
+                    viewAllEmployees()
+                })
+            })
         })
     })
 }
