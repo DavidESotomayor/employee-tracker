@@ -35,11 +35,10 @@ const start = () => {
     }).then(answer => {
         switch (answer.startChoices) {
             case choices[0]:
-                console.log('choice 1');
                 viewAllDepartments()
                 break;
             case choices[1]:
-                console.log('choice 2');
+                viewAllRoles()
                 break;
             case choices[2]:
                 console.log('choice 3');
@@ -68,7 +67,6 @@ const viewAllDepartments = () => {
     const query = "SELECT * FROM department";
     connection.query(query, (err, res) => {
         if (err) throw err;
-        console.log(res);
         console.log(`\nDEPARTMENTS:\n`);
         res.forEach((department) => {
             console.log(`ID: ${department.id} | ${department.department_name}`);
@@ -76,6 +74,17 @@ const viewAllDepartments = () => {
         console.log(`\n<------------------------------>\n`);
         start()
     })
-
 }
 
+const viewAllRoles = () => {
+    const query = "SELECT * FROM role";
+    connection.query(query, (err, res) => {
+        if (err) throw err;
+        console.log(`\nROLES:\n`);
+        res.forEach((role) => {
+            console.log(`ID: ${role.id} | Title: ${role.title} | Salary: ${role.salary}`);
+        })
+        console.log(`\n<------------------------------>\n`);
+        start()
+    })
+}
