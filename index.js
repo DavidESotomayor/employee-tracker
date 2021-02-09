@@ -44,7 +44,7 @@ const start = () => {
                 viewAllEmployees()
                 break;    
             case choices[3]:
-                console.log('choice 4');
+                addDepartment()
                 break;
             case choices[4]:
                 console.log('choice 5');
@@ -102,5 +102,21 @@ const viewAllEmployees = () => {
         console.table(res)
         console.log(`\n<------------------------------>\n`);
         start()
+    })
+}
+
+const addDepartment = () => {
+    inquirer.prompt({
+        name: "addDepartment",
+        type: "input",
+        message: "What is the name of the department you would like to add?"
+    }).then(answer => {
+        const query = "INSERT INTO department (department_name) VALUES (?)"
+        connection.query(query, answer.addDepartment, (err, res) => {
+            if (err) throw err;
+            console.log(`${answer.addDepartment} has been added.`);
+        })
+        console.log(`\n<------------------------------>\n`);
+        viewAllDepartments()
     })
 }
