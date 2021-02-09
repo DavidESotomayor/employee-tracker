@@ -50,11 +50,10 @@ const start = () => {
                 addRole()
                 break;
             case choices[5]:
-                console.log('choice 6');
                 addEmployee()
                 break;
             case choices[6]:
-                console.log('choice 7');
+                updateEmployeeRole()
                 break;
             default:
             console.log("Thanks for using the program. Goodbye :)");
@@ -235,6 +234,51 @@ const addEmployee = () => {
                     console.log(`\n${res.affectedRows} employee created`)
                     console.log(`\n<------------------------------>\n`);
                     viewAllEmployees()
+                })
+            })
+        })
+    })
+}
+
+const updateEmployeeRole = () => {
+    let employee = []
+    connection.query("SELECT id, first_name, last_name FROM employee", (err, res) => {
+        if (err) throw err;
+        
+        res.forEach( e => {
+            employee.push(`${e.id} ${e.first_name} ${e.last_name}`)
+        })
+
+        let newRole = []
+        connection.query("SELECT id, title FROM role", (err, res) => {
+            if (err) throw err;
+
+            res.forEach( r => {
+                newRole.push(`${r.id} ${r.title}`)
+            })
+
+            inquirer.prompt([
+                {
+                    name: "updateEmployee",
+                    type: "list",
+                    message: "Choose the employee whose role will be updated:",
+                    choices: employee
+                },
+                {
+                    name: "role",
+                    type: "list",
+                    message: "Choose the employee's new role position:",
+                    choices: newRole
+                }
+            ]).then(response => {
+                let employeeID = parseInt(response.updateEmployee)
+                let roleID = parseInt(response.role)
+                connection.query(`UPDATE employee SET role_id = ${roleID} WHERE id = ${employeeID}`,
+                (err, res) => {
+                    if (err) throw err;
+                    console.log(`\nEmployee role updated`);
+                    console.log(`\n<------------------------------>\n`);
+                    start()
                 })
             })
         })
