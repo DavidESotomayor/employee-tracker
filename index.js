@@ -1,6 +1,6 @@
 const mysql = require('mysql')
 const inquirer = require('inquirer')
-const table = require('console.table')
+const consoleTable = require('console.table')
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -36,6 +36,7 @@ const start = () => {
         switch (answer.startChoices) {
             case choices[0]:
                 console.log('choice 1');
+                viewAllDepartments()
                 break;
             case choices[1]:
                 console.log('choice 2');
@@ -61,5 +62,20 @@ const start = () => {
             process.exit()
         }
     })
+}
+
+const viewAllDepartments = () => {
+    const query = "SELECT * FROM department";
+    connection.query(query, (err, res) => {
+        if (err) throw err;
+        console.log(res);
+        console.log(`\nDEPARTMENTS:\n`);
+        res.forEach((department) => {
+            console.log(`ID: ${department.id} | ${department.department_name}`);
+        })
+        console.log(`\n<------------------------------>\n`);
+        start()
+    })
+
 }
 
