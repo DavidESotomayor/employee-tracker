@@ -68,7 +68,7 @@ const viewAllDepartments = () => {
         if (err) throw err;
         console.log(`\nDEPARTMENTS:\n`);
         res.forEach((department) => {
-            console.log(`ID: ${department.id} | ${department.department_name}`);
+            console.table(`ID: ${department.id} | ${department.department_name}`);
         })
         console.log(`\n<------------------------------>\n`);
         start()
@@ -81,7 +81,7 @@ const viewAllRoles = () => {
         if (err) throw err;
         console.log(`\nROLES:\n`);
         res.forEach((role) => {
-            console.log(`ID: ${role.id} | Title: ${role.title} | Salary: ${role.salary}`);
+            console.table(`ID: ${role.id} | Title: ${role.title} | Salary: ${role.salary}`);
         })
         console.log(`\n<------------------------------>\n`);
         start()
